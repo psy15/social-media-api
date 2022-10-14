@@ -1,0 +1,32 @@
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
+from .models import Post, LikePost, FollowUser, Comment
+
+
+admin.site.register(Post)
+admin.site.register(LikePost)
+admin.site.register(FollowUser)
+admin.site.register(Comment)
+
+
+class CustomUserAdmin(UserAdmin):
+
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = [
+        "id",
+        "email",
+        "username",
+        "is_staff",
+        "followers",
+        "followings",
+    ]
+
+    fieldsets = UserAdmin.fieldsets + ((None, {"fields": ("name",)}),)
+    add_fieldsets = UserAdmin.add_fieldsets + ((None, {"fields": ("name",)}),)
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
