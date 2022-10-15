@@ -1,4 +1,9 @@
 from django.urls import path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,  # new
+)
 from .views import (
     ListPost,
     GetPost,
@@ -8,16 +13,13 @@ from .views import (
     UserFollow,
     UserUnfollow,
     GetUserData,
-    CommentList
-)
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,  # new
+    CommentList,
+    apiOverview
 )
 
 urlpatterns = [
     # done
+    path('', apiOverview, name="api-overview"),
     path("all_posts/", ListPost().as_view(), name="all_posts"),
     path("posts/", CreatePost().as_view(), name="create_post"),
     path("posts/<int:pk>/", GetPost().as_view(),

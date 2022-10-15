@@ -3,8 +3,37 @@ from rest_framework import serializers
 from .models import Post, CustomUser, Comment
 
 
-class IndividualPostSerializer(serializers.ModelSerializer):
-    # comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ("comment",)
+
+
+
+class GetPostSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Post
+        fields = (
+            "id",
+            "created_at",
+            "number_of_likes",
+            "comments"
+        )
+
+    def get_comments(self, obj):
+        customer_account_query = Comment.objects.filter(
+            post=obj.id)
+        serializer = CommentSerializer(customer_account_query, many=True)
+
+        return serializer.data
+
+
+class GetAllPostsSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField()
 
     class Meta:
 
@@ -14,28 +43,31 @@ class IndividualPostSerializer(serializers.ModelSerializer):
             "user",
             "title",
             "description",
-            "created_at",
-            "number_of_likes"
+            "comments",
+            "number_of_likes",
+            "created_at"
         )
 
+    def get_comments(self, obj):
+        customer_account_query = Comment.objects.filter(
+            post=obj.id)
+        serializer = CommentSerializer(customer_account_query, many=True)
 
-class GetAllPostsSerializer(serializers.ModelSerializer):
+        return serializer.data
+
+
+class CreatePostSerializer(serializers.ModelSerializer):
 
     class Meta:
 
         model = Post
         fields = (
-            "id",
             "title",
             "description",
-            # "comments",
-            "number_of_likes",
-            "created_at"
         )
 
 
 class GetUserDetailsSerializer(serializers.ModelSerializer):
-
     class Meta:
 
         model = CustomUser
@@ -43,37 +75,4 @@ class GetUserDetailsSerializer(serializers.ModelSerializer):
             "username",
             "followers",
             "followings",
-        )
-
-
-# class CommentSerializer(serializers.ModelSerializer):
-
-#     # user = serializers.ReadOnlyField()
-#     # comment = serializers.ReadOnlyField("comment")
-#     # post = serializers.ReadOnlyField("post")
-
-#     class Meta:
-#         model = Comment
-#         fields = (
-#             "user",
-#             "comment",
-#             "post"
-#         )
-
-#     def __init__(self, *args, **kwargs):
-#         user = kwargs.pop('user')
-#         comment = kwargs.pop('comment')
-#         post = kwargs.pop('post')
-#         print(user, comment, post)
-#         super().__init__(*args, **kwargs)
-
-
-class CommentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Comment
-        fields = (
-            "user",
-            "comment",
-            "post"
         )
