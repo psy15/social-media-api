@@ -14,12 +14,19 @@ from .views import (
     UserUnfollow,
     GetUserData,
     CommentList,
-    apiOverview
+    ApiOverview
+)
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
 )
 
+
 urlpatterns = [
+    path('authenticate/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # done
-    path('', apiOverview, name="api-overview"),
+    path('', ApiOverview().as_view(), name="api-overview"),
     path("all_posts/", ListPost().as_view(), name="all_posts"),
     path("posts/", CreatePost().as_view(), name="create_post"),
     path("posts/<int:pk>/", GetPost().as_view(),

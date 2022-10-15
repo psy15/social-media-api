@@ -13,23 +13,24 @@ from .serializers import (
 )
 from .models import Post, LikePost, FollowUser, Comment
 from .models import CustomUser
-from rest_framework.decorators import api_view
 
 
-@api_view(['GET'])
-def apiOverview(request):
-    api_urls = {
-        'User': '/user/',
-        'All posts': '/all_posts/',
-        'Create Post': '/posts/',
-        'Get and Delete Post': '/posts/<str:pk>',
-        'Follow User': '/follow/<str:pk>/',
-        'Unfollow User': '/unfollow/<str:pk>/',
-        'Like Post': '/like/<str:pk>/',
-        'Unlike Post': '/unlike/<str:pk>/',
-        'Comment on Post': '/comment/<str:pk>/',
-    }
-    return Response(api_urls)
+class ApiOverview(generics.ListAPIView):
+    def get(self, request):
+        api_urls = {
+            'Authenticate': '/authenticate/',
+            'Refresh Token': '/token/refresh/',
+            'User': '/user/',
+            'All posts': '/all_posts/',
+            'Create Post': '/posts/',
+            'Get and Delete Post': '/posts/<str:pk>',
+            'Follow User': '/follow/<str:pk>/',
+            'Unfollow User': '/unfollow/<str:pk>/',
+            'Like Post': '/like/<str:pk>/',
+            'Unlike Post': '/unlike/<str:pk>/',
+            'Comment on Post': '/comment/<str:pk>/',
+        }
+        return Response(api_urls)
 
 
 # list all posts
@@ -37,9 +38,7 @@ def apiOverview(request):
 
 #     def get(self, request):
 #         queryset = Post.objects.filter(user=self.request.user)
-#         print(queryset,"querrrru")
 #         serializer_class = GetAllPostsSerializer(queryset, many=True)
-#         print(serializer_class.data, "daattata")
 #         return Response(serializer_class.data, status=status.HTTP_201_CREATED)
 
 
@@ -49,8 +48,6 @@ class ListPost(generics.ListAPIView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
-    
-
 
 
 # get individual post
@@ -67,21 +64,17 @@ class CreatePost(generics.CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 # like post
-
-
 class PostLike(APIView):
 
     def post(self, request, pk):
         username = self.request.user.username
-        # print("userame  ", username)
 
         post = Post.objects.get(id=pk)
 
         like_filter = LikePost.objects.filter(
             post_id=pk, username=username).values()
-
-        # print("like_filter  ", like_filter)
 
         if not like_filter.exists():
             new_like = LikePost.objects.create(
@@ -102,8 +95,6 @@ class PostUnlike(APIView):
         like_filter = LikePost.objects.filter(
             post_id=pk, username=username)
 
-        # print("like_filter, ", like_filter)
-
         if like_filter.exists():
             like_filter.delete()
             post.number_of_likes -= 1
@@ -118,13 +109,8 @@ class UserFollow(APIView):
         follower = CustomUser.objects.get(id=self.request.user.id)
         following = CustomUser.objects.get(id=pk)
 
-        # print("user  ", follower)
-        # print("to_follow  ", following)
-
         already_followed = FollowUser.objects.filter(
             user=pk, follower=follower.id).first()
-
-        # print("already_followed  ", already_followed)
 
         if not already_followed:
             new_follower = FollowUser.objects.create(
@@ -158,13 +144,20 @@ class UserUnfollow(APIView):
         return Response(status=status.HTTP_201_CREATED)
 
 
-class GetUserData(APIView):
+# class GetUserData(APIView):
 
-    def get(self, request):
+#     def get(self, request):
 
-        queryset = CustomUser.objects.get(id=self.request.user.id)
-        serializer_class = GetUserDetailsSerializer(queryset)
-        return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+#         queryset = CustomUser.objects.get(id=self.request.user.id)
+#         serializer_class = GetUserDetailsSerializer(queryset)
+#         return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+
+class GetUserData(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = GetUserDetailsSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(id=self.request.user.id)
 
 
 class CommentList(generics.CreateAPIView):
@@ -172,21 +165,8 @@ class CommentList(generics.CreateAPIView):
     queryset = Comment.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, post=Post.objects.get(id=self.kwargs.get('pk')))
+        serializer.save(user=self.request.user,
+                        post=Post.objects.get(id=self.kwargs.get('pk')))
 
     def get_queryset(self):
         return super().get_queryset().filter(post=self.kwargs.get('pk'))
-
-
-# class CommentList(APIView):
-#     serializer_class = CommentSerializer
-#     # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-#     def post(self, request, pk):
-#         comment = self.request.data.get("comment")
-#         user = self.request.user
-#         post_no = pk
-#         post = Post.objects.get(id=post_no)
-#         serializer_class = CommentSerializer(
-#             user=user, comment=comment, post=post)
-#         return Response(serializer_class.data, status=status.HTTP_201_CREATED)
