@@ -7,8 +7,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("comment",)
-
+        fields = ("id", "comment")
 
 
 class GetPostSerializer(serializers.ModelSerializer):
