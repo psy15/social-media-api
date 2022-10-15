@@ -9,6 +9,7 @@ djangorestframework = "*"
 psycopg2 = "*"
 drf-spectacular = "*"
 djangorestframework-simplejwt = "*"
+django-heroku = "*"
 
 [dev-packages]
 pylint = "*"
