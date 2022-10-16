@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wrob-vs%spg+ls+j%0gp8xy$-77c_6g6!8=^+4-58p+uktlpy7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["https://damp-savannah-69789.herokuapp.com/"]
+ALLOWED_HOSTS = ["https://social-media-sample-api.herokuapp.com/"]
 
 
 # Application definition
