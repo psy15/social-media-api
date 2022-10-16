@@ -1,45 +1,57 @@
-usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]
-           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
-           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
-           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
-           <command> [<args>]
+# social-media-sample-api
 
-These are common Git commands used in various situations:
+4 way chained dependent drop-down list in django (with ajax request) and mysql database
 
-start a working area (see also: git help tutorial)
-   clone             Clone a repository into a new directory
-   init              Create an empty Git repository or reinitialize an existing one
+## Running the Project Locally
 
-work on the current change (see also: git help everyday)
-   add               Add file contents to the index
-   mv                Move or rename a file, a directory, or a symlink
-   restore           Restore working tree files
-   rm                Remove files from the working tree and from the index
-   sparse-checkout   Initialize and modify the sparse-checkout
+#### 1. Clone git repository
 
-examine the history and state (see also: git help revisions)
-   bisect            Use binary search to find the commit that introduced a bug
-   diff              Show changes between commits, commit and working tree, etc
-   grep              Print lines matching a pattern
-   log               Show commit logs
-   show              Show various types of objects
-   status            Show the working tree status
+```bash
+git clone "https://github.com/psy15/social-media-api.git"
+```
 
-grow, mark and tweak your common history
-   branch            List, create, or delete branches
-   commit            Record changes to the repository
-   merge             Join two or more development histories together
-   rebase            Reapply commits on top of another base tip
-   reset             Reset current HEAD to the specified state
-   switch            Switch branches
-   tag               Create, list, delete or verify a tag object signed with GPG
+#### 2. Install requirements
 
-collaborate (see also: git help workflows)
-   fetch             Download objects and refs from another repository
-   pull              Fetch from and integrate with another repository or a local branch
-   push              Update remote refs along with associated objects
+```bash
+cd docial-media-api/
+pip install -r requirements.txt
+```
 
-'git help -a' and 'git help -g' list available subcommands and some
-concept guides. See 'git help <command>' or 'git help <concept>'
-to read about a specific subcommand or concept.
-See 'git help git' for an overview of the system.
+#### 3. Edit project settings
+
+```bash
+# open settings file in config
+
+# Edit Database configurations with your Postgresql configurations.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '<database-name>',
+        'USER': '<postgresql-user>',
+        'PASSWORD': '<postgresql-password>',
+        'HOST': '<postgresql-host>',
+        'PORT': '<postgresql-port>',
+    }
+}
+
+
+# save the file
+```
+
+#### 4. Runt tests
+
+```bash
+# Make migrations
+python manage.py test
+```
+
+#### 5. Run the server
+
+```bash
+# Make migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Run the server
+python manage.py runserver
+```

@@ -12,6 +12,7 @@ djangorestframework-simplejwt = "*"
 django-heroku = "*"
 whitenoise = "*"
 gunicorn = "*"
+pytest-drf = "*"
 
 [dev-packages]
 pylint = "*"
