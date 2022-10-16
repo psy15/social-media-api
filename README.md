@@ -1,6 +1,6 @@
 # social-media-sample-api
 
-4 way chained dependent drop-down list in django (with ajax request) and mysql database
+API supports features like getting a user profile, follow a user, upload a post, delete a post, like a post, unlike a liked post, and comment on a post.
 
 ## Running the Project Locally
 
